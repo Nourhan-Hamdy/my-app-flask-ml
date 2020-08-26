@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Predicting Community Electricity Segment</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/unicons.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.theme.default.min.css')}}">
+
+    <!-- MAIN STYLE -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/tooplate-style.css')}}">
+</head>
+<body>
+
+	<div style="text-align: center;">
+		<h2 >Predicting Community Electricity Segment</h2>
+		<br><br>
+		<a style="margin-left: 70%" href="{{ url_for('index')}}">Home Page</a>
+		<br><br>
+	</div>
+
+	<div>
+		<form method="POST" action="{{ url_for('community_predict')}}">
+			<!-- <div>
+				<p>
+					<label for="range_weight">Weight: </label> 
+					<input type="range" name="weight"  class="slider" min="0" max="100" value="75">
+					<label id="percent">ppercent</label>
+                 <span  class="slider_label"></span></p>
+
+               <p>
+               	<label for="range_weight">Height: </label> 
+               	<input type="range" name="height" class="slider" min="0" max="100" value="3">
+                <span  class="slider_label"></span></p>
+
+              <p>
+              	<label for="range_weight">Length: </label>
+              	<input type="range" name="length" class="slider" min="0" max="100" value="10">
+                <span  class="slider_label"></span></p>
+</div> -->
+            <label style="margin-left: 4.5em">Land type:</label>
+			 <select id='land_type' name='land_type' style="margin-left: 23.3em; width: 12.2em">
+				<option value=0>Urban</option>
+				<option value=1>Rural</option>
+			</select>
+			<br><br>
+			<label style="margin-left: 4.5em">Overcrowding rate:</label>
+			<input type="float" name="overcrowding" style="margin-left: 19.3em" required></input>
+			<br><br>
+			<label style="margin-left: 4.5em">average household size:</label>
+			<input type="float" name="household_size" style="margin-left: 17em" required></input>
+			<br><br>
+            <label style="margin-left: 4.5em">Measure of Summer Humidity:</label>
+            <input type="float" name="Summer_humidity" style="margin-left: 14em" required></input>
+			<br><br>
+			<label style="margin-left: 4.5em">Measure of Summer Maximum temperature:</label>
+            <input type="float" name="Summer_Max_temp" style="margin-left: 7.5em" required></input>
+			<br><br>
+            <label style="margin-left: 4.5em">Measure of Summer Minimum temperature:</label>
+            <input type="float" name="Summer_Min_temp" style="margin-left: 7.7em" required></input>
+			<br><br>
+			<label style="margin-left: 4.5em">Percentage of population less than 15 years old:</label>
+			<input type="float" name="Percent_of_pop_less_15" style="margin-left: 5.8em" required></input>
+			<br><br>
+            <label style="margin-left: 4.5em">Percentage of population from 15 to less than 60 years old:</label>
+            <input type="float" name="Percent_of_pop_bet_15_to_less_60" style="margin-left: 0.6em" required></input>
+            <br><br>
+            <label style="margin-left: 4.5em">Percentage of population more than 60 years old:</label>
+            <input type="float" name="Percent_of_pop_more_60" style="margin-left: 5em" required></input>
+            <br><br>
+            <label style="margin-left: 4.5em">Percentage of population with higher educational level:</label>
+            <input type="float" name="Percent_of_higher_education" style="margin-left: 2.5em" required></input>
+			<br><br>
+            <label style="margin-left: 4.5em">Percentage of illiterate population:</label>
+            <input type="float" name="Percent_of_illiterate" style="margin-left: 12em" required></input>
+			<br><br>
+			<label style="margin-left: 4.5em">Measure of Winter Humidity:</label>
+            <input type="float" name="Winter_humidity" style="margin-left: 14.5em" required></input>
+			<br><br>
+			<label style="margin-left: 4.5em">Measure of Winter average temperature:</label>
+            <input type="float" name="Winter_Avg_temp" style="margin-left: 9em" required></input>
+            <br><br>
+            <label style="margin-left: 4.5em">Measure of Winter Minimum temperature:</label>
+            <input type="float" name="Winter_Min_temp" style="margin-left: 8.5em" required></input>
+			<br><br>
+			<label style="margin-left: 4.5em">Percentage of Number of Buildings connected to electricity:</label>
+			<input type="float" name="Percent_no_build_conn_elect" style="margin-left: 0.5em" required></input>
+			<br><br>
+			<label style="margin-left: 4.5em">Percentage of household dependent on  Electricty in Cooking:</label>
+			<input type="float" name="Percent_depend_Elec_cooking" required></input>
+			<br><br>
+			
+			<button style="margin-left: 50em" class="btn custom-btn custom-btn-bg custom-btn-link"; type="reset">Clear</button>
+			<button class="btn custom-btn custom-btn-bg custom-btn-link";type="submit">Submit</button>
+		</form>
+	</div>
+	<div>
+		<h4 style="margin-left: 4.5em">Prediction results</h4>
+		<label style="margin-left: 4.5em">predicted segment during summer season is:</label>
+		{{Comm_Summ_final_result}}
+		{{summ_range}}
+		<br><br><br>
+	</div>
+	<div>
+		<label style="margin-left: 4.5em">predicted segment during winter season is:</label>
+		{{Comm_Win_final_result}}
+		{{win_range}}
+		<br><br><br>
+	</div>
+	<!-- <div>
+		<h4 style="margin-left: 4.5em">Report</h4>
+		<br>
+		
+		{% for result in note_results %}
+            <tr>
+                <label style="margin-left: 4.5em; margin-right: 1em">**</label><td>{{result}}</td>
+                <br><br>
+                
+            </tr>
+        {% endfor %}
+		
+	</div> -->
+
+	
+	<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/Headroom.js')}}"></script>
+    <script src="{{url_for('static', filename='js/jQuery.headroom.js')}}"></script>
+    <script src="{{url_for('static', filename='js/owl.carousel.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/smoothscroll.js')}}"></script>
+    <script src="{{url_for('static', filename='js/custom.js')}}"></script>
+
+</body>
+</html>

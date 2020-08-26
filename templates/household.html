@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Predicting electricity consumption</title>
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/unicons.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.theme.default.min.css')}}">
+
+    <!-- MAIN STYLE -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/tooplate-style.css')}}">
+</head>
+<body>
+	<div>
+		<h2 style="text-align: center;">Predicting Household Electricity Segment</h2>
+		<br><br>
+		<a style="margin-left: 70%" href="{{ url_for('index')}}">Home Page</a>
+		<br><br>
+	</div>
+
+	<div>
+		<form method="POST" action="{{ url_for('household_predict')}}">
+			<label style="margin-left: 4.5em">Storey Number:</label>
+			<select id='Storey_No' name='Storey_No' style="margin-left: 4.5em">
+				<option value=0>Ground</option>
+				<option value=1>First_Floor</option>
+				<option value=2>Second_Floor</option>
+				<option value=3>Third_Floor</option>	
+				<option value=4>Fourth_Floor</option>
+				<option value=5>Fifth_Floor</option>
+				<option value=6>Sixth_Floor</option>
+				<option value=7>Seventh_Floor</option>
+				<option value=8>Eighth_Floor</option>
+				<option value=9>Ninth_Floor</option>
+				<option value=10>Tenth_Floor</option>
+				<option value=11>More_Than_Tenth_Floor</option>
+			</select>
+			<br><br><br>
+			<label style="margin-left: 4.5em">Number of Rooms:</label>
+			<select id='Rooms_No' name='Rooms_No' style="margin-left: 2.5em">
+				<option value=1>One room and a reception</option>
+				<option value=2>Two rooms and a reception</option>
+				<option value=3>Three rooms and a reception</option>	
+				<option value=4>More than three room and a reception</option>
+			</select>
+			<br><br><br>
+			<label style="margin-left: 4.5em">Openings Number:</label>
+			<select id='Openings_No' name='Openings_No' style="margin-left: 2.5em">
+				<option value=1>One</option>
+				<option value=2>Two</option>
+				<option value=3>Three</option>
+				<option value=4>Four</option>	
+				<option value=5>Five</option>
+				<option value=6>Six</option>
+				<option value=7>Seven</option>
+				<option value=8>More_than_seven</option>
+			</select>
+			<br><br><br>
+			<label style="margin-left: 4.5em">Day time Artificial lighting working hours:</label>
+			<select id='Art_Light_Whrs' name='Art_Light_Whrs'>
+				<option value=1>Less than one hour</option>
+				<option value=2>From one two three hours</option>
+				<option value=3>From three to five hours</option>
+				<option value=4>More than five hours</option>	
+			</select>
+			<br><br><br>
+			<label style="margin-left: 4.5em">Floor area:</label>
+			<input type="Number" name="Floor_area" required style="margin-left: 6.5em"></input>
+			<br><br><br>
+			<label style="margin-left: 4.5em">Householder Educational level:</label>
+			<select id='Householder Educational level' name='Householder_Educational_level'>
+				<option value=5>Illiterate</option>
+				<option value=4>Read_and_Write</option>
+				<option value=3>Intermediate_education</option>
+				<option value=2>Education</option>	
+				<option value=1>Higher_Education</option>
+			</select>
+			<br><br><br>
+            <label style="margin-left: 4.5em">Number of appliances:</label>
+            <input type="Number" name="No_of_appliances" required></input>
+            <br><br><br>
+            <label style="margin-left: 4.5em">Fan daily working hours:</label>
+            <select id='Fan Whrs' name='Fan_Whrs'>
+				<option value=0>Zero</option>
+				<option value=1>Less than one hour</option>
+				<option value=2>From hour to three hour</option>
+				<option value=3>More than three hours</option>	
+			</select>
+			<br><br><br>
+			<label style="margin-left: 4.5em">Air conditioning working hours during summer:</label>
+            <select id='AC Whrs' name='AC_Whrs'>
+				<option value=0>Zero</option>
+				<option value=5>From one hour to three hours daily</option>
+				<option value=6>From_three_hours_to_five_hours_daily</option>
+				<option value=7>More than five hours daily</option>
+				<option value=1>Once_weekly</option>
+				<option value=2>Twice_weekly</option>
+				<option value=3>Three_times_weekly</option>
+				<option value=4>More than three times weekly</option>
+	    	</select>
+			<br><br><br>
+			<label style="margin-left: 4.5em">Family members:</label>
+            <input type="Number" name="Family_members" style="margin-left: 1.5em" required></input>
+            <br><br><br>
+            <label style="margin-left: 4.5em">Heater working hours during Winter:</label>
+            <select id='Heater Whrs' name='Heater_Whrs'>
+				<option value=0>Zero</option>
+				<option value=5>From one hour to three hours daily</option>
+				<option value=6>From_three_hours_to_five_hours_daily</option>
+				<option value=7>More than five hours daily</option>
+				<option value=1>Once_weekly</option>
+				<option value=2>Twice_weekly</option>
+				<option value=3>Three_times_weekly</option>
+				<option value=4>More than three times weekly</option>
+	    	</select>
+	    	<br><br><br> 
+	    	<label style="margin-left: 4.5em">Number of times using washing machine weekly:</label>
+            <select id='washing_Mach_Whrs' name='washing_Mach_Whrs'>
+				<option value=0>Zero</option>
+				<option value=1>One time</option>
+				<option value=2>From one to three times</option>
+				<option value=3>More than three times</option>
+	    	</select>
+			<br><br><br>  
+			<label style="margin-left: 4.5em">Motor daily working hours:</label>
+            <select id='Motor_Whrs' name='Motor_Whrs'>
+				<option value=0>Zero</option>
+				<option value=1>less than One hour</option>
+				<option value=2>From one to three hours</option>
+				<option value=3>More than three hours</option>
+	    	</select>
+			<br><br><br>
+			<label style="margin-left: 4.5em">Kettle daily working hours:</label>
+            <select id='Kettle_Whrs' name='Kettle_Whrs'>
+				<option value=0>Zero</option>
+				<option value=1>less than One hour</option>
+				<option value=2>From one to three hours</option>
+				<option value=3>More than three hours</option>
+	    	</select>
+			<br><br>      
+			<button style="margin-left: 50em" class="btn custom-btn custom-btn-bg custom-btn-link";  type="reset">Clear</button>
+			<button class="btn custom-btn custom-btn-bg custom-btn-link"; 
+			type="submit">Predict</button>
+		</form>
+	</div>
+	<div>
+		<h4 style="margin-left: 4.5em">Prediction results</h4>
+		<label style="margin-left: 4.5em">predicted segment during summer season is:</label>
+		{{House_Summ_final_result}}
+        <!-- <label style="margin-left: 4.5em; margin-right: 1em">with range:</label> -->
+		{{summ_range}}
+		<br><br><br>
+	</div>
+	<div>
+		<label style="margin-left: 4.5em">predicted segment during winter season is:</label>
+		{{House_Win_final_result}}
+		<!-- <label style="margin-left: 4.5em; margin-right: 1em">with range:   </label> -->
+		{{win_range}}
+		<br><br><br>
+	</div>
+    
+    <div>
+		<h4 style="margin-left: 4.5em">Report</h4>
+		<br>
+		
+		{% for result in note_results %}
+            <tr>
+                <label style="margin-left: 4.5em; margin-right: 1em">**</label><td>{{result}}</td>
+                <br><br>
+                <!-- <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td> -->
+            </tr>
+        {% endfor %}
+		<!-- <label style="margin-left: 4.5em">**</label> {{fan_note}}
+		<br><br>
+		<label style="margin-left: 4.5em">**</label> {{Ac_note}}
+		<br><br>
+		<label style="margin-left: 4.5em">**</label> {{heater_note}}
+		<br><br>
+		<label style="margin-left: 4.5em">**</label> {{motor_note}}
+		<br><br>
+		<label style="margin-left: 4.5em">**</label> {{kettle_note}}
+		<br><br> -->
+	</div>
+
+	
+	<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/Headroom.js')}}"></script>
+    <script src="{{url_for('static', filename='js/jQuery.headroom.js')}}"></script>
+    <script src="{{url_for('static', filename='js/owl.carousel.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/smoothscroll.js')}}"></script>
+    <script src="{{url_for('static', filename='js/custom.js')}}"></script>
+    
+
+</body>
+</html>

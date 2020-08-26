@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>التنبؤ باستهلاك الكهرباء</title>
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/unicons.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.theme.default.min.css')}}">
+
+    <!-- MAIN STYLE -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/tooplate-style.css')}}">
+</head>
+<body>
+	<div>
+		<h2 style="text-align: center;">التنبؤ برقم الشريحة المستهلكة على مستوى الأسر</h2>
+		<br><br>
+		<a style="margin-left:30%" href="{{ url_for('translate_arab')}}">الصفحة الرئيسية</a>
+		<br><br>
+	</div>
+
+	<div>
+		<form method="POST" action="{{ url_for('arab_household_predict')}}">
+			<label style="margin-right: 4.5em; float: right">الطابق</label>
+			<select id='Storey_No' name='Storey_No' style="float: right; margin-right: 28.5em">
+				<option value=0>أرضي</option>
+				<option value=1>الدور الاول علوي</option>
+				<option value=2>الدور الثاني</option>
+				<option value=3>الدور الثالث</option>	
+				<option value=4>الدور الرابع</option>
+				<option value=5>الدور الخامس</option>
+				<option value=6>الدور السادس</option>
+				<option value=7>الدور السابع</option>
+				<option value=8>الدور الثامن</option>
+				<option value=9>الدور التاسع</option>
+				<option value=10>الدور العاشر</option>
+				<option value=11>أكثر من ذلك</option>
+			</select>
+			<br><br><br>
+			<label style="margin-right: 4.5em; float: right">عدد غرف المنزل</label>
+			<select id='Rooms_No' name='Rooms_No' style="float: right; margin-right: 24em">
+				<option value=1>غرفة وصالة</option>
+				<option value=2>غرفتين وصالة</option>
+				<option value=3>Tثلاث غرف وصالة</option>	
+				<option value=4>أكثر من ذلك</option>
+			</select>
+			<br><br><br>
+			<label style="margin-right: 4.5em; float: right">عدد النوافذ والبلكونات داخل المنزل</label>
+			<select id='Openings_No' name='Openings_No' style="float: right; margin-right: 16.5em">
+				<option value=1>1</option>
+				<option value=2>2</option>
+				<option value=3>3</option>
+				<option value=4>4</option>	
+				<option value=5>5</option>
+				<option value=6>6</option>
+				<option value=7>7</option>
+				<option value=8>أكثر من ذلك</option>
+			</select>
+			<br><br><br>
+			<label style="margin-right: 4.5em; float: right">عدد ساعات تشغيل الإضاءة الصناعية من بداية اليوم وحتى المغرب</label>
+			<select id='Art_Light_Whrs' name='Art_Light_Whrs' style="float: right; margin-right: 4.5em">
+				<option value=1>أقل من ساعة</option>
+				<option value=2>من ساعة إلى ثلاث ساعات</option>
+				<option value=3>من ثلاث إلى خمس ساعات</option>
+				<option value=4>خمس ساعات فأكثر</option>	
+			</select>
+			<br><br><br>
+			<label style="margin-right: 4.5em; float: right">مساحة الشقة (متر مربع)</label>
+			<input type="Number" name="Floor_area" required style="float: right; margin-right: 20.5em"></input>
+			<br><br><br>
+			<label style="margin-right: 4.5em; float: right">المؤهل الدراسي لرب الأسرة</label>
+			<select id='Householder Educational level' name='Householder_Educational_level' style="float: right; margin-right: 20.5em">
+				<option value=5>أمي</option>
+				<option value=4>يقرأ ويكتب</option>
+				<option value=3>مؤهل متوسط</option>
+				<option value=2>مؤهل فوق المتوسط</option>
+				<option value=1>جامعي</option>
+			</select>
+			<br><br><br>
+            <label style="margin-right: 4.5em; float: right">كم عدد الأجهزة التي تستخدمها في المنزل</label>
+            <input type="Number" name="No_of_appliances" required style="float: right; margin-right: 15.5em"></input>
+            <br><br><br>
+            <label style="margin-right: 4.5em; float: right">عدد ساعات تشغيل المروحة يوميًا</label>
+            <select id='Fan Whrs' name='Fan_Whrs' style="float: right; margin-right: 18.5em">
+				<option value=0>0</option>
+				<option value=1>أقل من ساعة</option>
+				<option value=2>من ساعة إلى 3 ساعات</option>
+				<option value=3>أكثر من 3 ساعات</option>	
+			</select>
+			<br><br><br>
+			<label style="margin-right: 4.5em; float: right">مدة تشغيل جهاز التكييف في المتوسط خلال فصل الصيف</label>
+            <select id='AC Whrs' name='AC_Whrs' style="float: right; margin-right: 8.5em">
+				<option value=0>0</option>
+				<option value=5>من ساعة إلى ثلاث ساعات يوميًا</option>
+				<option value=6>من ثلاث غلى خمس ساعات ساعات يوميًا</option>
+				<option value=7>خمس ساعات فأكثر يوميًا</option>
+				<option value=1>مرة أسبوعيًا</option>
+				<option value=2>مرتين أسبوعيًا</option>
+				<option value=3>ثلاث مرات أسبوعيًا</option>
+				<option value=4>أكثر من ثلاث مرات أسبوعيًا</option>
+	    	</select>
+			<br><br><br>
+			<label style="margin-right: 4.5em; float: right">إجمالي عدد المقيمين في المنزل</label>
+            <input type="Number" name="Family_members" style="float: right; margin-right: 14.5em" required></input>
+            <br><br><br>
+            <label style="margin-right: 4.5em; float: right">مدة تشغيل أجهزة السخانات الكهربائية في المتوسط خلال فصل الشتاء</label>
+            <select id='Heater Whrs' name='Heater_Whrs' style="float: right; margin-right: 4.5em">
+				<option value=0>0</option>
+				<option value=5>من ساعة إلى ثلاث ساعات يوميًا</option>
+				<option value=6>من ثلاث غلى خمس ساعات ساعات يوميًا</option>
+				<option value=7>خمس ساعات فأكثر يوميًا</option>
+				<option value=1>مرة أسبوعيًا</option>
+				<option value=2>مرتين أسبوعيًا</option>
+				<option value=3>ثلاث مرات أسبوعيًا</option>
+				<option value=4>أكثر من ثلاث مرات أسبوعيًا</option>
+	    	</select>
+	    	<br><br><br> 
+	    	<label style="margin-right: 4.5em; float: right">عدد مرات تشغيل الغسالة أسبوعيًا</label>
+            <select id='washing_Mach_Whrs' name='washing_Mach_Whrs' style="float: right; margin-right: 14.5em">
+				<option value=0>0</option>
+				<option value=1>مرة</option>
+				<option value=2>من مرة إلى ثلاث مرات</option>
+				<option value=3>أكثر من ثلاث مرات</option>
+	    	</select>
+			<br><br><br>  
+			<label style="margin-right: 4.5em; float: right">عدد ساعات تشغيل الموتور يوميًا</label>
+            <select id='Motor_Whrs' name='Motor_Whrs' style="float: right; margin-right: 14.5em">
+				<option value=0>0</option>
+				<option value=1>أقل من ساعة</option>
+				<option value=2>من ساعة إلى 3 ساعات</option>
+				<option value=3>أكثر من ثلاث ساعات</option>
+	    	</select>
+			<br><br><br>
+			<label style="margin-right: 4.5em; float: right">عدد ساعات تشغيل الغلاية يوميًا</label>
+            <select id='Kettle_Whrs' name='Kettle_Whrs' style="float: right; margin-right: 14.5em">
+				<option value=0>0</option>
+				<option value=1>أقل من ساعة</option>
+				<option value=2>من ساعة إلى 3 ساعات</option>
+				<option value=3>أكثر من ثلاث ساعات</option>
+	    	</select>
+			<br><br>      
+			<button style="margin-left: 50em" class="btn custom-btn custom-btn-bg custom-btn-link";  type="reset">مسح</button>
+			<button class="btn custom-btn custom-btn-bg custom-btn-link"; type="submit"; type="submit">تنبّأ</button>
+		</form>
+	</div>
+	<div>
+		<h4 style="margin-right: 4.5em; float: right">النتيجة</h4>
+		<br><br><br>
+		<div  style="float: right; margin-right: 4.5em">
+		<label style="float: right; margin-right: 4.5em">:الشريحة المتوقعة خلال الصيف</label>
+		{{House_Summ_final_result}}
+        <!-- <label style="margin-left: 4.5em; margin-right: 1em">with range:</label> -->
+		{{summ_range}}
+		</div>
+
+		<br><br><br>
+	</div>
+	<div style="float: right; margin-right: 4.5em">
+		<label style="margin-right: 4.5em; float: right">:الشريحة المتوقعة خلال الشتاء</label>
+		{{House_Win_final_result}}
+		<!-- <label style="margin-left: 4.5em; margin-right: 1em">with range:   </label> -->
+		{{win_range}}
+		
+	</div>
+           <br><br><br>
+    <div style="margin-right: 4.5em; float: right">
+		<h4 style="margin-right: 0.5em; float: right">تقرير</h4>
+		<br><br>
+		
+		{% for result in note_results %}
+            <tr>
+                <td>{{result}}</td>
+                <br><br>
+                <!-- <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td> -->
+            </tr>
+        {% endfor %}
+		<!-- <label style="margin-left: 4.5em">**</label> {{fan_note}}
+		<br><br>
+		<label style="margin-left: 4.5em">**</label> {{Ac_note}}
+		<br><br>
+		<label style="margin-left: 4.5em">**</label> {{heater_note}}
+		<br><br>
+		<label style="margin-left: 4.5em">**</label> {{motor_note}}
+		<br><br>
+		<label style="margin-left: 4.5em">**</label> {{kettle_note}}
+		<br><br> -->
+	</div>
+
+	
+	<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/Headroom.js')}}"></script>
+    <script src="{{url_for('static', filename='js/jQuery.headroom.js')}}"></script>
+    <script src="{{url_for('static', filename='js/owl.carousel.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/smoothscroll.js')}}"></script>
+    <script src="{{url_for('static', filename='js/custom.js')}}"></script>
+    
+
+</body>
+</html>

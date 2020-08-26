@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>التنبؤ باستهلاك الكهرباء</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/unicons.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.theme.default.min.css')}}">
+
+    <!-- MAIN STYLE -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/tooplate-style.css')}}">
+</head>
+<body>
+
+	<div style="text-align: center;">
+		<h2 >التنبؤ باستهلاك الكهرباء</h2>
+		<br><br>
+		<a style="float: left; margin-left: 12em;" href="{{ url_for('translate_arab')}}">الصفحة الرئيسة</a>
+		<br><br>
+	</div>
+
+	<div>
+		<form method="POST" action="{{ url_for('arab_community_predict')}}">
+			<!-- <div>
+				<p>
+					<label for="range_weight">Weight: </label> 
+					<input type="range" name="weight"  class="slider" min="0" max="100" value="75">
+					<label id="percent">ppercent</label>
+                 <span  class="slider_label"></span></p>
+
+               <p>
+               	<label for="range_weight">Height: </label> 
+               	<input type="range" name="height" class="slider" min="0" max="100" value="3">
+                <span  class="slider_label"></span></p>
+
+              <p>
+              	<label for="range_weight">Length: </label>
+              	<input type="range" name="length" class="slider" min="0" max="100" value="10">
+                <span  class="slider_label"></span></p>
+</div> -->
+            <label style="margin-right: 4.5em; float: right">:النوع</label>
+			 <select id='land_type' name='land_type' style="float: right; margin-right: 19em; width: 12.2em">
+				<option value=0>حضر</option>
+				<option value=1>ريف</option>
+			</select>
+			<br><br>
+			<label style="margin-right: 4.5em; float: right">:معدل التزاحم</label>
+			<input type="float" name="overcrowding" style="float: right; margin-right: 15.2em" required></input>
+			<br><br>
+			<label style="margin-right: 4.5em; float: right">:متوسط حجم الأسرة</label>
+			<input type="float" name="household_size" style="float: right; margin-right: 12.3em" required></input>
+			<br><br>
+            <label style="margin-right: 4.5em; float: right">:متوسط درجة الرطوبة صيفًا</label>
+            <input type="float" name="Summer_humidity" style="float: right; margin-right: 9.3em" required></input>
+			<br><br>
+			<label style="margin-right: 4.5em; float: right">:متوسط درجة الحرارة العظمى صيفًا</label>
+            <input type="float" name="Summer_Max_temp" style="float: right; margin-right: 5.9em" required></input>
+			<br><br>
+            <label style="margin-right: 4.5em; float: right">:متوسط درجة الحرارة الصغرى صيفًا</label>
+            <input type="float" name="Summer_Min_temp" style="float: right; margin-right: 6em" required></input>
+			<br><br>
+			<label style="margin-right: 4.5em; float: right">:نسبة الأفراد أقل من 15 سنة</label>
+			<input type="float" name="Percent_of_pop_less_15" style="float: right; margin-right: 9.3em" required></input>
+			<br><br>
+            <label style="margin-right: 4.5em; float: right">:نسبة الأفراد ما بين سن 15 إلى 60 سنة</label>
+            <input type="float" name="Percent_of_pop_bet_15_to_less_60" style="float: right; margin-right: 4.8em" required></input>
+            <br><br>
+            <label style="margin-right: 4.5em; float: right">:نسبة الأفراد أعلى من 60 سنة</label>
+            <input type="float" name="Percent_of_pop_more_60" style="float: right; margin-right: 8.5em" required></input>
+            <br><br>
+            <label style="margin-right: 4.5em; float: right">:نسبة الأفراد بمؤهل دراسي عالي</label>
+            <input type="float" name="Percent_of_higher_education" style="float: right; margin-right: 7.5em" required></input>
+			<br><br>
+            <label style="margin-right: 4.5em; float: right">:نسبة الأمية</label>
+            <input type="float" name="Percent_of_illiterate" style="float: right; margin-right: 16.3em" required></input>
+			<br><br>
+			<label style="margin-right: 4.5em; float: right">:متوسط درجة الرطوبة شتاءً</label>
+            <input type="float" name="Winter_humidity" style="float: right; margin-right: 9.7em" required></input>
+			<br><br>
+			<label style="margin-right: 4.5em; float: right">:متوسط درجة الحرارة شتاءً</label>
+            <input type="float" name="Winter_Avg_temp" style="float: right; margin-right: 10em" required></input>
+            <br><br>
+            <label style="margin-right: 4.5em; float: right">:متوسط درجة الحرارة الصغرى شتاءً</label>
+            <input type="float" name="Winter_Min_temp" style="float: right; margin-right: 6.5em" required></input>
+			<br><br>
+			<label style="margin-right: 4.5em; float: right">:نسبة المباني المتصلة بالكهرباء</label>
+			<input type="float" name="Percent_no_build_conn_elect" style="float: right; margin-right: 8.5em" required></input>
+			<br><br>
+			<label style="margin-right: 4.5em; float: right">:نسبة الأسر المعتمدة على الكهرباء في الطهي</label>
+			<input type="float" name="Percent_depend_Elec_cooking" style="float: right; margin-right: 2.5em" required></input>
+			<br><br>
+			
+			<button style="margin-left: 50em" class="btn custom-btn custom-btn-bg custom-btn-link"; type="reset">مسح</button>
+			<button class="btn custom-btn custom-btn-bg custom-btn-link";type="submit">تنبأ</button>
+		</form>
+	</div>
+	<div>
+		<h4 style="margin-right: 4.5em; float: right">النتيجة</h4>
+		<br><br><br>
+		<div  style="float: right; margin-right: 4.5em">
+		<label style="float: right; margin-right: 4.5em">:الشريحة المتوقعة خلال الصيف</label>
+		{{Comm_Summ_final_result}}
+		{{summ_range}}
+	</div>
+		<br><br><br>
+	</div>
+	<div style="float: right; margin-right: 4.5em">
+		<label style="margin-right: 4.5em; float: right">:الشريحة المتوقعة خلال الشتاء
+		</label>
+		{{Comm_Win_final_result}}
+		{{win_range}}
+		<br><br><br>
+	</div>
+	<!-- <div>
+		<h4 style="margin-left: 4.5em">Report</h4>
+		<br>
+		
+		{% for result in note_results %}
+            <tr>
+                <label style="margin-left: 4.5em; margin-right: 1em">**</label><td>{{result}}</td>
+                <br><br>
+                
+            </tr>
+        {% endfor %}
+		
+	</div> -->
+
+	
+	<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/Headroom.js')}}"></script>
+    <script src="{{url_for('static', filename='js/jQuery.headroom.js')}}"></script>
+    <script src="{{url_for('static', filename='js/owl.carousel.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/smoothscroll.js')}}"></script>
+    <script src="{{url_for('static', filename='js/custom.js')}}"></script>
+
+</body>
+</html>
