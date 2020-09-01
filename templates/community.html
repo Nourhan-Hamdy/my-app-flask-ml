@@ -54,6 +54,9 @@
 			<label style="margin-left: 4.5em">average household size:</label>
 			<input type="float" name="household_size" style="margin-left: 17em" required></input>
 			<br><br>
+			<label style="margin-left: 4.5em">total number of population:</label>
+			<input type="float" name="tot_pop" style="margin-left: 16em" required></input>
+			<br><br>
             <label style="margin-left: 4.5em">Measure of Summer Humidity:</label>
             <input type="float" name="Summer_humidity" style="margin-left: 14em" required></input>
 			<br><br>
@@ -100,30 +103,39 @@
 	</div>
 	<div>
 		<h4 style="margin-left: 4.5em">Prediction results</h4>
-		<label style="margin-left: 4.5em">predicted segment during summer season is:</label>
+		<label style="margin-left: 4.5em">average predicted segment during summer season among household is:</label>
 		{{Comm_Summ_final_result}}
 		{{summ_range}}
 		<br><br><br>
 	</div>
 	<div>
-		<label style="margin-left: 4.5em">predicted segment during winter season is:</label>
+		<label style="margin-left: 4.5em">average predicted segment during winter season among household is:</label>
 		{{Comm_Win_final_result}}
 		{{win_range}}
 		<br><br><br>
 	</div>
-	<!-- <div>
-		<h4 style="margin-left: 4.5em">Report</h4>
+	<div>
+		<h4 style="margin-left: 4.5em">Notification</h4>
 		<br>
+		<label style="margin-left: 4.5em; margin-right: 1em">** total minimum power required for the targeted community is about: </label>{{mini_kwh}}  <label> kwh</label>
+		<br><br>
+		<label style="margin-left: 4.5em; margin-right: 1em">** total minimum power required for the targeted community is about: </label>{{maxi_kwh}}  <label> kwh</label>
+		<br></br>
 		
-		{% for result in note_results %}
-            <tr>
-                <label style="margin-left: 4.5em; margin-right: 1em">**</label><td>{{result}}</td>
-                <br><br>
-                
-            </tr>
-        {% endfor %}
+		<!-- {% for result in note_results %} -->
+            <!-- <tr>
+                <label style="margin-left: 4.5em; margin-right: 1em">** total minimum power required for the targeted community is about: </label><td>{{mini_kwh}}
+                </td>
+                <br><br>  
+            </tr> -->
+            <!-- <tr>
+                <label style="margin-left: 4.5em; margin-right: 1em">** total minimum power required for the targeted community is about: </label><td>{{maxi_kwh}}
+                </td>
+                <br><br>  
+            </tr> -->
+        <!-- {% endfor %} -->
 		
-	</div> -->
+	</div>
 
 	
 	<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>

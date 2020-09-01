@@ -19,13 +19,96 @@ Community_Win_Cons_model = joblib.load(Community_Win_Cons_vectorizer)
 
 app = Flask(__name__)
 
-prediction_labels ={1:{"value":"First segment", "range": "from 0 to 50 Kw"},
-		                   2 : {"value":'Second segment', "range": "from 51 to 100 kw"},
-		                   3 : {"value":'Third segment', "range": "from 101 to 200 kw"}, 
-		                   4 : {"value":'Fourth segment', "range": "from 201 to 350 kw"},
-		                   5 : {"value":'Fifth segment', "range":"from 351 to 650 kw"}, 
-		                   6 : {"value":'Sixth segment', "range":"from 651 to 1000 kw"},
-		                   7 : {"value":'Seventh segment', "range": "more than 1000 kw"}}
+prediction_labels ={1:{"value":"First segment", "range": "from 0 to 50 Kw", "minimum": "zero", "maximum": "19"},
+		                   2 : {"value":'Second segment', "range": "from 51 to 100 kw", "minimum": "24.48", "maximum": "48"},
+		                   3 : {"value":'Third segment', "range": "from 101 to 200 kw", "minimum": "65.65", "maximum": "130"}, 
+		                   4 : {"value":'Fourth segment', "range": "from 201 to 350 kw", "minimum": "192.96", "maximum": "336"},
+		                   5 : {"value":'Fifth segment', "range":"from 351 to 650 kw", "minimum": "414.18", "maximum": "767"}, 
+		                   6 : {"value":'Sixth segment', "range":"from 651 to 1000 kw", "minimum": "911.4", "maximum": "1400"},
+		                   7 : {"value":'Seventh segment', "range": "more than 1000 kw", "minimum": "1451.45", "maximum": "More than 1451.45"}}
+
+def tarrif_determin(predicted_segment,flag):
+	categ = ""
+	mini_cons= ""                         #(0*0.38)
+	maxi_cons= ""
+	mini_kwh = ""
+	maxi_kwh = ""   
+	if predicted_segment == 1:
+		if flag == False:
+			categ = "first"
+		else:
+			categ = "الأولى"
+		mini_cons="0"                     #(0*0.38)
+		maxi_cons="19"                    #(50*0.38)
+		mini_kwh = 0
+		maxi_kwh = 50
+		return categ,mini_cons,maxi_cons, mini_kwh, maxi_kwh
+	elif predicted_segment == 2:
+		if flag == False:
+			categ = "first"
+		else:
+			categ = "الأولى"
+		mini_cons="24.48"                     #(51*0.48)
+		maxi_cons="48"                        #(100*0.48)
+		mini_kwh = 51
+		maxi_kwh = 100
+		return categ,mini_cons,maxi_cons, mini_kwh, maxi_kwh
+	elif predicted_segment == 3:
+		if flag == False:
+			categ = "second"
+		else:
+			categ = "الثانية"
+		mini_cons = "65.65"                   #(101*0.65)
+		maxi_cons = "130"                     #(200*0.65)
+		mini_kwh = 101
+		maxi_kwh = 200
+		return categ,mini_cons,maxi_cons, mini_kwh, maxi_kwh
+	elif predicted_segment == 4:
+		if flag == False:
+			categ = "second"
+		else:
+			categ = "الثانية"
+		mini_cons = "130.96 "                 #(200*0.65)+(1*0.96)
+		maxi_cons = "274"                     #(200*0.65)+(150*0.96)
+		mini_kwh = 201
+		maxi_kwh = 350
+		return categ,mini_cons,maxi_cons, mini_kwh, maxi_kwh
+	elif predicted_segment == 5:
+		if flag == False:
+			categ = "second"
+		else:
+			categ = "الثانية"
+		mini_cons = "275.8"                   #(200*0.65)+(150*0.96)+(1*1.18)
+		maxi_cons = "628"                     #(200*0.65)+(150*0.96)+(300*1.18)
+		mini_kwh = 351
+		maxi_kwh = 650
+		return categ,mini_cons,maxi_cons, mini_kwh, maxi_kwh
+	elif predicted_segment == 6:
+		if flag == False:
+			categ = "third"
+		else:
+			categ = "الثالثة"
+		mini_cons = "768.18"                 #(651*1.18)
+		maxi_cons = "1180"                    #(1000*1.18)
+		mini_kwh = 651
+		maxi_kwh = 1000
+		return categ,mini_cons,maxi_cons, mini_kwh, maxi_kwh
+	else:
+		if flag == False:
+			categ = "third"
+		else:
+			categ = "الثالثة"
+		mini_cons = "943.95"                #(651*1.45)
+		maxi_cons = "more than 1450"        #more than (1000*1.45)
+		mini_kwh = 651
+		maxi_kwh = 1001
+		return categ,mini_cons,maxi_cons, mini_kwh, maxi_kwh
+
+	 
+
+
+
+
 
 arab_prediction_labels ={1:{"value":"الشريحة الأولى", "range": "من 0 إلى 50 ك.و"},
 		                   2 : {"value":'الشريحة الثانية', "range": "من 51 إلى 100 ك.و"},
@@ -47,7 +130,7 @@ def get_keys(val,my_dict):
 	for key, values in my_dict.items():
 		if val == key:
 			# print("fff",values)
-			return values["value"], values["range"]
+			return values["value"], values["range"], values["minimum"], values["maximum"]
 
 # result=get_keys (2,prediction_labels)
 # print("result ya rub", result[0])	
@@ -115,6 +198,7 @@ def index():
 @app.route('/household_predict',methods=['GET','POST'])
 def household_predict():
 	if request.method == 'POST':
+		arab_Lang_Flag = False;
 		Storey_No = float(request.form.get('Storey_No'))
 		Rooms_No = float(request.form.get('Rooms_No'))
 		Openings_No = float(request.form.get('Openings_No'))
@@ -135,8 +219,10 @@ def household_predict():
 			Family_members,Householder_Educational_level,No_of_appliances,Fan_Whrs,AC_Whrs,Washing_Mach_Whrs]])
 		House_Win_prediction = House_Win_Cons_model.predict([[Storey_No,Rooms_No,Openings_No,Floor_area,Art_Light_Whrs,Family_members,Householder_Educational_level
 			,No_of_appliances,Motor_Whrs,Kettle_Whrs,Heater_Whrs,Washing_Mach_Whrs]])
-		House_Summ_final_result = get_keys(House_Summ_prediction,prediction_labels)
-		House_Win_final_result =  get_keys(House_Win_prediction,prediction_labels)
+		# House_Summ_final_result = get_keys(House_Summ_prediction,prediction_labels)
+		summ_categ, summ_mini_cons, summ_maxi_cons, mini_kwh, maxi_kwh = tarrif_determin(House_Summ_prediction,arab_Lang_Flag)
+		# House_Win_final_result =  get_keys(House_Win_prediction,prediction_labels)
+		win_categ, win_mini_cons, win_maxi_cons, mini_kwh, maxi_kwh = tarrif_determin(House_Win_prediction,arab_Lang_Flag)
 		note_results = [] 
 		Art_light_note = light_whrs_guide(Art_Light_Whrs,arab_Lang_Flag)
 		if Art_light_note:
@@ -166,9 +252,10 @@ def household_predict():
 		# return render_template('household.html',House_Summ_final_result=House_Summ_final_result[0],
 		# 	summ_range=House_Summ_final_result[1],House_Win_final_result=House_Win_final_result[0],
 		# 	win_range=House_Win_final_result[1],note_results=note_results)
-		return render_template('household.html',House_Summ_final_result=House_Summ_final_result[0]+" "+"  in range:"+" "+
-			House_Summ_final_result[1],House_Win_final_result=House_Win_final_result[0]+" "+"  in range:"+" "+
-			House_Win_final_result[1],note_results=note_results)
+		# return render_template('household.html',House_Summ_final_result=House_Summ_final_result[0]+" "+"in range:"+House_Summ_final_result[1]+"value with minimum consumption is:"+House_Summ_final_result[2]+"pound"+"and value with maximum consumption is:"+House_Summ_final_result[3]+"pound",House_Win_final_result=House_Win_final_result[0]+" "+"  in range:"+" "+
+		# 	House_Win_final_result[1],note_results=note_results)
+		return render_template('household.html',House_Summ_final_result=summ_categ+" "+"segment; with minimum consumption is:"+summ_mini_cons+" "+"pound"+" "+"and maximum consumption is:"+summ_maxi_cons+" "+"pound",
+			House_Win_final_result=win_categ+" "+"segment; with minimum consumption is:"+win_mini_cons+" "+"pound"+" "+"and maximum consumption is:"+win_maxi_cons+" "+"pound",note_results=note_results)
 
 		####################################################################################################################################
 @app.route('/arab_household_predict',methods=['GET','POST'])
@@ -196,8 +283,10 @@ def arab_household_predict():
 			Family_members,Householder_Educational_level,No_of_appliances,Fan_Whrs,AC_Whrs,Washing_Mach_Whrs]])
 		House_Win_prediction = House_Win_Cons_model.predict([[Storey_No,Rooms_No,Openings_No,Floor_area,Art_Light_Whrs,Family_members,Householder_Educational_level
 			,No_of_appliances,Motor_Whrs,Kettle_Whrs,Heater_Whrs,Washing_Mach_Whrs]])
-		House_Summ_final_result = get_keys(House_Summ_prediction,arab_prediction_labels)
-		House_Win_final_result =  get_keys(House_Win_prediction,arab_prediction_labels)
+		# House_Summ_final_result = get_keys(House_Summ_prediction,arab_prediction_labels)
+		# House_Win_final_result =  get_keys(House_Win_prediction,arab_prediction_labels)
+		summ_categ, summ_mini_cons, summ_maxi_cons, mini_kwh, maxi_kwh = tarrif_determin(House_Summ_prediction,arab_Lang_Flag)
+		win_categ, win_mini_cons, win_maxi_cons, mini_kwh, maxi_kwh = tarrif_determin(House_Win_prediction,arab_Lang_Flag)
 		note_results = [] 
 		Art_light_note = light_whrs_guide(Art_Light_Whrs,arab_Lang_Flag)
 		if Art_light_note:
@@ -227,9 +316,11 @@ def arab_household_predict():
 		# return render_template('household.html',House_Summ_final_result=House_Summ_final_result[0],
 		# 	summ_range=House_Summ_final_result[1],House_Win_final_result=House_Win_final_result[0],
 		# 	win_range=House_Win_final_result[1],note_results=note_results)
-		return render_template('household-rtl.html',House_Summ_final_result=House_Summ_final_result[0]+" "+"  "+"وهي"+" "+
-			House_Summ_final_result[1],House_Win_final_result=House_Win_final_result[0]+" "+" "+"وهي"+" "+
-			House_Win_final_result[1],note_results=note_results)
+		# return render_template('household-rtl.html',House_Summ_final_result=House_Summ_final_result[0]+" "+"  "+"وهي"+" "+
+		# 	House_Summ_final_result[1],House_Win_final_result=House_Win_final_result[0]+" "+" "+"وهي"+" "+
+		# 	House_Win_final_result[1],note_results=note_results)
+		return render_template('household-rtl.html',House_Summ_final_result=summ_categ+" "+"بأقل استهلاك"+summ_mini_cons+" "+"جنيه"+" "+"و أعلى اسستهلاك"+summ_maxi_cons+" "+"جنيه",
+			House_Win_final_result=win_categ+" "+"بأقل استهلاك"+win_mini_cons+" "+"جنيه"+" "+"و أعلى استهلاك"+win_maxi_cons+" "+"جنيه",note_results=note_results)
 
 
 
@@ -238,9 +329,11 @@ def arab_household_predict():
 @app.route('/community_predict',methods=['GET','POST'])
 def community_predict():
 	if request.method == 'POST':
+		arab_Lang_Flag = False;
 		land_type = float(request.form.get('land_type'))
 		overcrowding = float(request.form.get('overcrowding'))
 		household_size = float(request.form.get('household_size'))
+		tot_pop = float(request.form.get('tot_pop'))
 		Summer_humidity = float(request.form.get('Summer_humidity'))
 		Summer_Max_temp = float(request.form.get('Summer_Max_temp'))
 		Summer_Min_temp = float(request.form.get('Summer_Min_temp'))
@@ -265,10 +358,13 @@ def community_predict():
 		Comm_Win_prediction = Community_Win_Cons_model.predict([[land_type,Percent_of_pop_less_15,Percent_of_pop_bet_15_to_less_60,
 			Percent_of_pop_more_60,Percent_of_higher_education,Percent_of_illiterate,Winter_humidity,Winter_Avg_temp,Winter_Min_temp,
 			Percent_no_build_conn_elect,overcrowding,household_size,Percent_depend_Elec_cooking]])
-		Comm_Summ_final_result = get_keys(Comm_Summ_prediction,prediction_labels)
-		Comm_Win_final_result =  get_keys(Comm_Win_prediction,prediction_labels)
-		return render_template('community.html',Comm_Summ_final_result=Comm_Summ_final_result[0]+" "+"  in range:"+" "+
-			Comm_Summ_final_result[1],Comm_Win_final_result=Comm_Win_final_result[0]+" "+"  in range:"+" "+Comm_Win_final_result[1])
+		summ_categ, summ_mini_cons, summ_maxi_cons, mini_kwh, maxi_kwh = tarrif_determin(Comm_Summ_prediction,arab_Lang_Flag)
+		win_categ, win_mini_cons, win_maxi_cons, mini_kwh, maxi_kwh = tarrif_determin(Comm_Win_prediction,arab_Lang_Flag)
+		total_min_kwh = float(mini_kwh) * float(tot_pop)
+		total_max_kwh = float(maxi_kwh) * float(tot_pop)
+		return render_template('community.html',Comm_Summ_final_result=summ_categ+" "+"segment; with minimum consumption is:"+summ_mini_cons+" "+"pound"+" "+"and maximum consumption is:"+summ_maxi_cons+" "+"pound",
+			Comm_Win_final_result=win_categ+" "+"segment; with minimum consumption is:"+win_mini_cons+" "+"pound"+" "+"and maximum consumption is:"+win_maxi_cons+" "+"pound",mini_kwh=total_min_kwh,maxi_kwh=total_max_kwh)
+		
 
 
 ###########################################################################################################################################
@@ -276,6 +372,7 @@ def community_predict():
 @app.route('/arab_community_predict',methods=['GET','POST'])
 def arab_community_predict():
 	if request.method == 'POST':
+		arab_Lang_Flag = True;
 		land_type = float(request.form.get('land_type'))
 		overcrowding = float(request.form.get('overcrowding'))
 		household_size = float(request.form.get('household_size'))
@@ -303,10 +400,12 @@ def arab_community_predict():
 		Comm_Win_prediction = Community_Win_Cons_model.predict([[land_type,Percent_of_pop_less_15,Percent_of_pop_bet_15_to_less_60,
 			Percent_of_pop_more_60,Percent_of_higher_education,Percent_of_illiterate,Winter_humidity,Winter_Avg_temp,Winter_Min_temp,
 			Percent_no_build_conn_elect,overcrowding,household_size,Percent_depend_Elec_cooking]])
-		Comm_Summ_final_result = get_keys(Comm_Summ_prediction,arab_prediction_labels)
-		Comm_Win_final_result =  get_keys(Comm_Win_prediction,arab_prediction_labels)
-		return render_template('community-rtl.html',Comm_Summ_final_result=Comm_Summ_final_result[0]+" "+": وهي"+" "+
-			Comm_Summ_final_result[1],Comm_Win_final_result=Comm_Win_final_result[0]+" "+": وهي"+" "+Comm_Win_final_result[1])
+		summ_categ, summ_mini_cons, summ_maxi_cons, mini_kwh, maxi_kwh = tarrif_determin(Comm_Summ_prediction,arab_Lang_Flag)
+		win_categ, win_mini_cons, win_maxi_cons, mini_kwh, maxi_kwh = tarrif_determin(Comm_Win_prediction,arab_Lang_Flag)
+		return render_template('community-rtl.html',Comm_Summ_final_result=summ_categ+" "+"بأقل استهلاك"+summ_mini_cons+" "+"جنيه"+" "+"و أعلى اسستهلاك"+summ_maxi_cons+" "+"جنيه",
+			Comm_Win_final_result=win_categ+" "+"بأقل استهلاك"+win_mini_cons+" "+"جنيه"+" "+"و أعلى استهلاك"+win_maxi_cons+" "+"جنيه")
+		# return render_template('community-rtl.html',Comm_Summ_final_result=Comm_Summ_final_result[0]+" "+": وهي"+" "+
+		# 	Comm_Summ_final_result[1],Comm_Win_final_result=Comm_Win_final_result[0]+" "+": وهي"+" "+Comm_Win_final_result[1])
 
 
 ############################################################################################################################################		
