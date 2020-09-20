@@ -1,1 +1,1 @@
-web: gunicorn myappflaskml.wsgi --log-file -
+web: gunicorn app.py
